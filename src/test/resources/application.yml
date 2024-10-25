@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: "demo.webflux.authentication"
+  output:
+    ansi:
+      enabled: always
+  sql:
+    init:
+      data-locations: "classpath:sql/schema.sql"
+      mode: always
+  r2dbc:
+    url: r2dbc:h2:mem:///authentication;
+    username: sa
+    password:
+
+logging:
+  level:
+    com.jpdr.apps.demo.webflux: DEBUG
+    org.springframework.security: DEBUG
+
+app:
+  token:
+    secret: "3600000"
+    expiration: "QyQHaOEvKaU+lIaHHaAPYiSGq/6Dyh5AVJ+niudq1HE="
+
