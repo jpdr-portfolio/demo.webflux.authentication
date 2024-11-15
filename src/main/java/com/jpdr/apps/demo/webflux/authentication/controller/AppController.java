@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -24,24 +25,28 @@ public class AppController {
   private final AppService appService;
   
   @GetMapping("/authentication/secure/users")
-  public ResponseEntity<Flux<LoginUserDto>> findUsers(
+  public Mono<ResponseEntity<List<LoginUserDto>>> findUsers(
     @RequestParam(name = "userEmail", required = false) String userEmail){
-    return new ResponseEntity<>(appService.findUsers(userEmail), HttpStatus.OK);
+    return this.appService.findUsers(userEmail)
+      .map(user -> new ResponseEntity<>(user, HttpStatus.OK));
   }
   
   @PostMapping("/authentication/unsecure/users")
-  public ResponseEntity<Mono<LoginUserDto>> createUser(@RequestBody LoginUserDto userDto){
-    return new ResponseEntity<>(appService.createUser(userDto), HttpStatus.CREATED);
+  public Mono<ResponseEntity<LoginUserDto>> createUser(@RequestBody LoginUserDto userDto){
+    return this.appService.createUser(userDto)
+      .map(user -> new ResponseEntity<>(user, HttpStatus.CREATED));
   }
   
   @GetMapping("/authentication/secure/tokens")
-  public ResponseEntity<Mono<TokenDto>> getToken(){
-    return new ResponseEntity<>(appService.getToken(), HttpStatus.OK);
+  public Mono<ResponseEntity<TokenDto>> getToken(){
+    return this.appService.getToken()
+      .map(token -> new ResponseEntity<>(token, HttpStatus.OK));
   }
   
   @PostMapping(path = "/authentication/unsecure/tokens/validate",
   consumes = MediaType.TEXT_PLAIN_VALUE)
-  public ResponseEntity<Mono<Void>> validateToken(@RequestBody String token){
-    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(appService.validateToken(token));
+  public Mono<ResponseEntity<Void>> validateToken(@RequestBody String token){
+    return this.appService.validateToken(token)
+      .then(Mono.just(ResponseEntity.status(HttpStatus.NO_CONTENT).build()));
   }
 }

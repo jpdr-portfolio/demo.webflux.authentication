@@ -64,7 +64,7 @@ class AppControllerTest {
     String expectedBody = objectMapper.writeValueAsString(expectedUsers);
     
     when(appService.findUsers(isNull()))
-      .thenReturn(Flux.fromIterable(expectedUsers));
+      .thenReturn(Mono.just(expectedUsers));
     when(reactiveUserDetailsService.findByUsername(anyString()))
       .thenReturn(Mono.just(userDetails));
     
@@ -96,7 +96,7 @@ class AppControllerTest {
     String expectedBody = objectMapper.writeValueAsString(expectedUsers);
     
     when(appService.findUsers(anyString()))
-      .thenReturn(Flux.fromIterable(expectedUsers));
+      .thenReturn(Mono.just(expectedUsers));
     when(reactiveUserDetailsService.findByUsername(anyString()))
       .thenReturn(Mono.just(userDetails));
     

@@ -90,12 +90,11 @@ class AppServiceTest {
       .thenReturn(Flux.fromIterable(expectedUsers));
     
     StepVerifier.create(appService.findUsers(null))
-      .assertNext(receivedUser -> assertUser(expectedUsersMap.get(receivedUser.getId()),
-        receivedUser))
-      .assertNext(receivedUser -> assertUser(expectedUsersMap.get(receivedUser.getId()),
-        receivedUser))
-      .assertNext(receivedUser -> assertUser(expectedUsersMap.get(receivedUser.getId()),
-        receivedUser))
+      .assertNext(receivedUsers ->{
+        for(LoginUserDto receivedUser : receivedUsers){
+          assertUser(expectedUsersMap.get(receivedUser.getId()),receivedUser);
+        }
+      })
       .expectComplete()
       .verify();
   
@@ -110,7 +109,7 @@ class AppServiceTest {
       .thenReturn(Mono.just(expectedUser));
     
     StepVerifier.create(appService.findUsers(EMAIL))
-      .assertNext(receivedUser -> assertUser(expectedUser, receivedUser))
+      .assertNext(receivedUsers -> assertUser(expectedUser, receivedUsers.getFirst()))
       .expectComplete()
       .verify();
   }

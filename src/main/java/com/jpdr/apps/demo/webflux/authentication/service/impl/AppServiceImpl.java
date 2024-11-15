@@ -18,11 +18,11 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -36,11 +36,12 @@ public class AppServiceImpl implements AppService {
   
   
   @Override
-  public Flux<LoginUserDto> findUsers(String userEmail) {
+  public Mono<List<LoginUserDto>> findUsers(String userEmail) {
     return Mono.just(Optional.ofNullable(userEmail))
-      .flatMapMany(optional -> {
+      .flatMap(optional -> {
         if(optional.isPresent()){
-          return Flux.from(findUserByEmail(userEmail));
+          return Mono.from(findUserByEmail(userEmail)
+            .map(List::of));
         }
         return findAllUsers();
       });
@@ -97,11 +98,12 @@ public class AppServiceImpl implements AppService {
       .doOnNext(loginUserDto -> log.debug(loginUserDto.toString()));
   }
   
-  private Flux<LoginUserDto> findAllUsers(){
+  private Mono<List<LoginUserDto>> findAllUsers(){
     log.debug("findAllUsers");
     return this.loginUserRepository.findAllByIsActiveIsTrue()
       .map(LoginUserMapper.INSTANCE::entityToDto)
-      .doOnNext(loginUserDto -> log.debug(loginUserDto.toString()));
+      .doOnNext(loginUserDto -> log.debug(loginUserDto.toString()))
+      .collectList();
   }
   
   
