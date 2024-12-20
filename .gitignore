@@ -37,3 +37,8 @@ out/
 .vscode/
 
 *.db
+autoscaling.yml
+deployment.yml
+Dockerfile
+minikube.ps1
+service.yml

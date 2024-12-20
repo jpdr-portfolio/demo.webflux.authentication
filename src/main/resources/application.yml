@@ -4,20 +4,38 @@ spring:
   output:
     ansi:
       enabled: always
-  sql:
-    init:
-      data-locations: "classpath:sql/schema.sql"
-      mode: always
   r2dbc:
-    url: r2dbc:h2:file:///./authentication;DATABASE_TO_UPPER=FALSE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;
-    username: sa
-    password:
+    url: r2dbc:postgresql://${APP_DB_URL}/${APP_DB_NAME}
+    username: ${APP_DB_USERNAME}
+    password: ${APP_DB_PASSWORD}
+    pool:
+      validation-query: "SELECT 1"
+      max-size: 10
+      initial-size: 5
+      max-idle-time: 30s
+      max-validation-time: 1000
+      validation-depth: REMOTE
 logging:
   level:
-    com.jpdr.apps.demo.webflux: DEBUG
-    org.springframework.security: DEBUG
+    com.jpdr.apps.demo.webflux: ${APP_LOG_LEVEL}
+    org.springframework.r2dbc: ${APP_LOG_LEVEL}
+    org.springframework.security: ${APP_LOG_LEVEL}
 app:
+  pod-name: ${APP_POD_NAME}
   token:
     secret: ${APP_TOKEN_SECRET}
     expiration: ${APP_TOKEN_EXPIRATION}
+  event-logger:
+    kafka:
+      topic: ${APP_EVENT_LOGGER_KAFKA_TOPIC}
+      boostrap-server: ${APP_EVENT_LOGGER_KAFKA_BOOSTRAP_SERVER}
+      compression-type: ${APP_EVENT_LOGGER_KAFKA_COMPRESSION_TYPE}
+      delivery-timeout-ms: ${APP_EVENT_LOGGER_KAFKA_DELIVERY_TIMEOUT_MS}
+      request-timeout-ms: ${APP_EVENT_LOGGER_KAFKA_REQUEST_TIMEOUT_MS}
+      add-type-info-headers: ${APP_EVENT_LOGGER_KAFKA_ADD_TYPE_INFO_HEADERS};
+      retries: ${APP_EVENT_LOGGER_KAFKA_RETRIES}
+    hidden-fields:
+      - username
+      - password
+      - data
 

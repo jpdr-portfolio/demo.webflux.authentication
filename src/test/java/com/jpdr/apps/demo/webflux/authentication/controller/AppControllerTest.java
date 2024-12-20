@@ -6,6 +6,7 @@ import com.jpdr.apps.demo.webflux.authentication.exception.InvalidUsernameExcept
 import com.jpdr.apps.demo.webflux.authentication.service.AppService;
 import com.jpdr.apps.demo.webflux.authentication.service.dto.LoginUserDto;
 import com.jpdr.apps.demo.webflux.authentication.service.dto.TokenDto;
+import com.jpdr.apps.demo.webflux.eventlogger.component.EventLogger;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +21,6 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
@@ -40,7 +40,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ExtendWith(MockitoExtension.class)
 class AppControllerTest {
   
@@ -52,6 +52,8 @@ class AppControllerTest {
   private ObjectMapper objectMapper;
   @MockBean
   private ReactiveUserDetailsService reactiveUserDetailsService;
+  @MockBean
+  private EventLogger eventLogger;
   
   @Test
   @DisplayName("OK - Find Users - No User Email")

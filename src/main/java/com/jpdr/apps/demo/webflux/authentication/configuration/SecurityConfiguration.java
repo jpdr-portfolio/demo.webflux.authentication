@@ -29,6 +29,7 @@ public class SecurityConfiguration {
     httpSecurity.csrf(CsrfSpec::disable)
       .authorizeExchange(spec -> spec
         .pathMatchers("/authentication/unsecure/**").permitAll()
+        .pathMatchers("/actuator/health/**").permitAll()
         .pathMatchers("/authentication/secure/**").authenticated())
       .httpBasic(Customizer.withDefaults())
       .formLogin(ServerHttpSecurity.FormLoginSpec::disable)

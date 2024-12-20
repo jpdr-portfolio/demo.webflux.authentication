@@ -3,6 +3,7 @@ package com.jpdr.apps.demo.webflux.authentication.controller;
 import com.jpdr.apps.demo.webflux.authentication.service.AppService;
 import com.jpdr.apps.demo.webflux.authentication.service.dto.LoginUserDto;
 import com.jpdr.apps.demo.webflux.authentication.service.dto.TokenDto;
+import com.jpdr.apps.demo.webflux.eventlogger.component.EventLogger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,23 +24,31 @@ import java.util.List;
 public class AppController {
 
   private final AppService appService;
+  private final EventLogger eventLogger;
   
   @GetMapping("/authentication/secure/users")
   public Mono<ResponseEntity<List<LoginUserDto>>> findUsers(
     @RequestParam(name = "userEmail", required = false) String userEmail){
     return this.appService.findUsers(userEmail)
-      .map(user -> new ResponseEntity<>(user, HttpStatus.OK));
+      .doOnNext(users ->
+        this.eventLogger.logEvent("findUsers", users))
+      .map(users -> new ResponseEntity<>(users, HttpStatus.OK));
+      
   }
   
   @PostMapping("/authentication/unsecure/users")
   public Mono<ResponseEntity<LoginUserDto>> createUser(@RequestBody LoginUserDto userDto){
     return this.appService.createUser(userDto)
+      .doOnNext(user ->
+        this.eventLogger.logEvent("createUser", user))
       .map(user -> new ResponseEntity<>(user, HttpStatus.CREATED));
   }
   
   @GetMapping("/authentication/secure/tokens")
   public Mono<ResponseEntity<TokenDto>> getToken(){
     return this.appService.getToken()
+      .doOnNext(token ->
+        this.eventLogger.logEvent("getToken", token))
       .map(token -> new ResponseEntity<>(token, HttpStatus.OK));
   }
   
@@ -47,6 +56,8 @@ public class AppController {
   consumes = MediaType.TEXT_PLAIN_VALUE)
   public Mono<ResponseEntity<Void>> validateToken(@RequestBody String token){
     return this.appService.validateToken(token)
+      .then(Mono.fromRunnable( () ->
+        this.eventLogger.logEvent("validateToken", "")))
       .then(Mono.just(ResponseEntity.status(HttpStatus.NO_CONTENT).build()));
   }
 }

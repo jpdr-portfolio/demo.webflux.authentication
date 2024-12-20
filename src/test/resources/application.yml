@@ -16,10 +16,24 @@ spring:
 logging:
   level:
     com.jpdr.apps.demo.webflux: DEBUG
+    org.springframework.r2dbc: DEBUG
     org.springframework.security: DEBUG
 
 app:
+  pod-name: "demo.webflux.authentication-0"
   token:
-    secret: "3600000"
-    expiration: "QyQHaOEvKaU+lIaHHaAPYiSGq/6Dyh5AVJ+niudq1HE="
-
+    secret: "QyQHaOEvKaU+lIaHHaAPYiSGq/6Dyh5AVJ+niudq1HE="
+    expiration: "3600000"
+  event-logger:
+    kafka:
+      topic: "topic"
+      boostrap-server: "http://localhost:9092"
+      compression-type: "none"
+      delivery-timeout-ms: 10000
+      request-timeout-ms: 10000
+      add-type-info-headers: false
+      retries: 10
+    hidden-fields:
+      - username
+      - password
+      - data
