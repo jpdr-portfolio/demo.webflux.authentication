@@ -18,7 +18,7 @@ public class LoginUser {
   
   @Id
   @Column("id")
-  Integer id;
+  Long id;
   @Column("username")
   String username;
   @Column("password")

@@ -5,7 +5,7 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-public interface LoginUserRepository extends ReactiveCrudRepository<LoginUser, Integer> {
+public interface LoginUserRepository extends ReactiveCrudRepository<LoginUser, Long> {
   
   Flux<LoginUser> findAllByIsActiveIsTrue();
   Mono<LoginUser> findByUsernameAndIsActiveIsTrue(String username);

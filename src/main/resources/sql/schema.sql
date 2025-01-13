@@ -2,17 +2,10 @@
 --DROP TABLE IF EXISTS login_log;
 
 CREATE TABLE IF NOT EXISTS login_user (
-  id int AUTO_INCREMENT primary key,
-  username VARCHAR(254),
-  password VARCHAR(255),
-  is_active BOOLEAN,
-  creation_date TIMESTAMP WITH TIME ZONE,
+  id bigserial primary key,
+  username VARCHAR(254) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  is_active BOOLEAN NOT NULL,
+  creation_date TIMESTAMP WITH TIME ZONE NOT NULL,
   deletion_date TIMESTAMP WITH TIME ZONE
-);
-
-CREATE TABLE IF NOT EXISTS login_log (
-  id int AUTO_INCREMENT primary key,
-  login_id int not null,
-  login_date TIMESTAMP WITH TIME ZONE not null,
-  expiration_date TIMESTAMP WITH TIME ZONE not null
 );

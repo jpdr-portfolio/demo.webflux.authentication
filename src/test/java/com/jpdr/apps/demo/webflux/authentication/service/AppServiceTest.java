@@ -83,7 +83,7 @@ class AppServiceTest {
   void givenNullUserIdWhenFindUserThenReturnUser(){
     
     List<LoginUser> expectedUsers = getLoginUsers();
-    Map<Integer, LoginUser> expectedUsersMap = expectedUsers.stream()
+    Map<Long, LoginUser> expectedUsersMap = expectedUsers.stream()
       .collect(Collectors.toMap(LoginUser::getId, Function.identity()));
     
     when(loginUserRepository.findAllByIsActiveIsTrue())

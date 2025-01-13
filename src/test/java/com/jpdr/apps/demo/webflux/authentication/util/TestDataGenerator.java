@@ -119,7 +119,7 @@ public class TestDataGenerator {
     return getLoginUser(1);
   }
   
-  public static LoginUser getLoginUser(int userId){
+  public static LoginUser getLoginUser(long userId){
     return LoginUser.builder()
       .id(userId)
       .username(EMAIL_PREFIX + "1" + EMAIL_SUFIX)

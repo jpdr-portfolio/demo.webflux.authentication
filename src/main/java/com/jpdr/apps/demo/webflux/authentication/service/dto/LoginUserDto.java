@@ -15,7 +15,7 @@ import java.time.OffsetDateTime;
 public class LoginUserDto {
   
   @JsonInclude(Include.NON_NULL)
-  Integer id;
+  Long id;
   @JsonInclude(Include.NON_NULL)
   String username;
   @JsonInclude(Include.NON_NULL)
